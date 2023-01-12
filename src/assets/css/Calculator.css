@@ -1,0 +1,75 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+.calculator {
+  display: grid;
+  justify-content: center;
+  height: 100vh;
+}
+.calculator-grid {
+  display: grid;
+  margin: 2.25rem 0.5rem 0.5rem 0.5rem;
+  gap: 0.25rem;
+  height: 60vh;
+  grid-template-columns: repeat(4, 10vw);
+  justify-content: center;
+}
+@media only screen and (max-width: 414px) {
+  .calculator-grid {
+    grid-template-columns: repeat(4, 23.3vw);
+  }
+}
+.component-display {
+  display: flex;
+  padding: 10rem 1rem 1rem 1rem;
+  word-wrap: break-word;
+  word-break: break-all;
+  justify-content: flex-end;
+  color: #fff;
+  background-color: #000;
+  text-align: right;
+  font-weight: 200;
+}
+.component-display > div {
+  font-size: 2.5rem;
+}
+.component-button {
+  cursor: pointer;
+  border-color: #a0a0a0;
+  background: #a0a0a0;
+  border: 0;
+  border-radius: 50px;
+  font-size: 2rem;
+  margin: 0 1px 0 0;
+  flex: 1 0 auto;
+  padding: 0;
+}
+@media only screen and (max-width: 1024px) {
+  .component-button {
+    border-radius: 100px;
+  }
+}
+.component-button:last-child button {
+  margin-right: 0;
+}
+.component-button.operation {
+  border-color: #f5923e;
+  background: #f5923e;
+  color: white;
+}
+.component-button.span {
+  grid-column: span 2;
+}
+.component-button-panel {
+  background: #858694;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1 0 auto;
+}
+.component-button-panel > div {
+  width: 100%;
+  margin-bottom: 1px;
+  flex: 1 0 auto;
+  display: flex;
+}
