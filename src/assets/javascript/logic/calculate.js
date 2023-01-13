@@ -38,7 +38,7 @@ export default function calculate(number, buttonType) {
     return {
       total: null, next: null, operation: null
     };
-  }  else if (buttonType === "+/-") {
+  } else if (buttonType === "+/-") {
     if (number.next) {
       return {
         next: (-1 * parseFloat(number.next)).toString()
@@ -51,13 +51,17 @@ export default function calculate(number, buttonType) {
       return {};
     }
   } else if (buttonType === "%") {
-    if (number.next) {
+    if (number.operation && number.next) {
+      const result = operate(number.total, number.next, number.operation);
+      return {
+        total: Big(result).div(100).toString(),
+        next: null,
+        operation: null,
+      };
+
+    } else if (number.next) {
       return {
         next: Big(number.next).div(100).toString()
-      };
-    } else if (number.total) {
-      return {
-        next: Big(number.total).div(100).toString()
       };
     } else {
       return {};

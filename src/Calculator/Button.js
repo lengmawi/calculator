@@ -5,8 +5,8 @@ import "../assets/css/Calculator.css";
 export default class Button extends React.Component {
   static propTypes = {
       name: PropTypes.string,
-      operation: PropTypes.bool,
-      span: PropTypes.bool,
+      orange: PropTypes.bool,
+      wide: PropTypes.bool,
       clickHandler: PropTypes.func
   };
 
@@ -15,12 +15,12 @@ export default class Button extends React.Component {
   };
 
   render() {
-    const className = [ "component-button",
-                       this.props.operation ? "operation" : "",
-                       this.props.span ? "span" : ""
+    var className = [ "component-button",
+                       this.props.orange ? "operation" : "",
+                       this.props.wide ? "span" : ""
     ];
     return (
       <button className={className.join(" ").trim()} onClick={this.handleClick}>{this.props.name}</button>
-    );
-  }
+    )
+  };
 }

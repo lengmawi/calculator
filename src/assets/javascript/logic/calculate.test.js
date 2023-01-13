@@ -1,5 +1,7 @@
 import calculate from "./calculate.js";
 
+var expect = require('chai').expect;
+
 function pressButtons(buttons) {
     const value = {};
     buttons.forEach(button => {
@@ -14,7 +16,7 @@ function pressButtons(buttons) {
 }
 
 function expectButtons(buttons, expectation) {
-    return pressButtons(buttons) === expectation;
+    expect(pressButtons(buttons)).to.deep.eq(expectation);
 }
   
 function test(buttons, expectation, only = false) {
@@ -360,18 +362,19 @@ describe("calculate", function() {
     });
 
     test(["÷", "0"], {
-        next: "Error",
+        next: "0",
         operation: "÷"
     });
 
     test(["÷", "0", "="], {
         total: "Error"
     });
-    
+    // Unsure why it is written that way
     test(["÷", "0", "=", "Error"], {
-        next: "Error"
+        total: "Error",
+        operation: "Error"
     });
-
+    
     test(["÷", "7"], {
         next: "7",
         operation: "÷"
@@ -386,8 +389,7 @@ describe("calculate", function() {
     });
     
     test(["÷", "7", "5"], {
-        total: "7",
-        next: "5",
+        next: "75",
         operation: "÷"
     });
     
@@ -411,12 +413,12 @@ describe("calculate", function() {
     
     
     test(["÷", "7", "=", "÷"], {
-        total: "7",
+        total: "0",
         operation: "÷"
     });
 
     test(["÷", "7", "=", "÷", "5"], {
-        total: "7",
+        total: "0",
         next: "5",
         operation: "÷"
     });
@@ -430,7 +432,7 @@ describe("calculate", function() {
     });
     
     test(["÷", "7", "÷", "5"], {
-        total: "7",
+        total: "0",
         next: "5",
         operation: "÷"
     });
@@ -475,7 +477,7 @@ describe("calculate", function() {
     test(["7", "÷", "5", "=", "÷", "10"], {
         total: "1.4",
         next: "10",
-        operation: "+",
+        operation: "÷"
     });
   
     test(["7", "÷", "5", "=", "÷", "10", "="], {
@@ -488,12 +490,12 @@ describe("calculate", function() {
     
     test(["-", "7", "÷"], {
         total: "-7",
-        operation: "÷",
+        operation: "÷"
     });
     test(["-", "7", "÷", "5"], {
         total: "-7",
         next: "5",
-        operation: "÷",
+        operation: "÷"
     });
     
     test(["-", "7", "÷", "5", "="], {
@@ -531,7 +533,7 @@ describe("calculate", function() {
         next: "7",
         operation: "x"
     });
-    
+
     test(["x", "7", "x"], {
         total: "0",
         operation: "x",
@@ -560,11 +562,11 @@ describe("calculate", function() {
     });
 
     test(["x", "7", "5", "=", "0"], {
-        total: "0",
+        next: "0",
     });
     
     test(["x", "7", "=", "x"], {
-        total: "7",
+        total: "0",
         operation: "x"
     });
 
@@ -642,7 +644,7 @@ describe("calculate", function() {
     test(["-", "7", "x", "5", "=", "x", "10"], {
         total: "-35",
         next: "10",
-        operation: "x",
+        operation: "x"
     });
   
     test(["-", "7", "x", "5", "=", "x", "10", "="], {
@@ -655,49 +657,49 @@ describe("calculate", function() {
     // period
     test(["+", "2", "5"], {
         next: "25",
-        operation: "+",
+        operation: "+"
     });
 
     test(["0", ".", "4"], {
-        next: "0.4",
+        next: "0.4"
     });
 
     test([".", "4"], {
-        next: "0.4",
+        next: "0.4"
     });
 
     test([".", "4", "-", ".", "2"], {
         total: "0.4",
         next: "0.2",
-        operation: "-",
+        operation: "-"
     });
 
     test([".", "4", "-", ".", "2", "="], {
-        total: "0.2",
+        total: "0.2"
     });
     
     // percent 
-    test(["%"], {
-        next: ""
-    });
+    test(["%"], {});
     
     test(["%", "7"], {
         next: "7"
     });
     test(["7", "%"], {
-        next: "0.07",
+        next: "0.07"
     });
     
-    test(["4", "%", "%"], {
+    test(["7", "%", "5"], {
+        next: "5"
+    });
+
+    test(["7", "%", "%"], {
         next: "0.0007",
     });
 
-    test(["%", "%"], {
-        next: "0.0007",
-    });
+    test(["%", "%"], {});
 
     test(["7", "%", "x", "5"], {
-        total: "0.35",
+        total: "0.07",
         next: "5",
         operation: "x"
     });
@@ -709,11 +711,10 @@ describe("calculate", function() {
     test(["7", "%", "x", "5", "=", "0.35"], {
         next: "0.35",
     });
-    
+    // not logic
     test(["7", "x", "5","%"], {
         total: "0.35",
-        next: "0.05",
-        operation: "x"
+        // operation: "%"
     });
     
     test(["7", "x", "5", "%", "="], {

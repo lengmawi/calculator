@@ -16,7 +16,7 @@ export default function operate(numberOne, numberTwo, operation) {
     return valueOne.times(valueTwo).toString();
   }
   if (operation === "÷") {
-    if (valueTwo.eq(0)) {
+    if (valueTwo.eq("0")) {
       return "Error";
     } else {
       return valueOne.div(valueTwo).toString();
