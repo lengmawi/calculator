@@ -13,96 +13,126 @@ import isNumber from "./isNumber";
  *   operation: String  +, -, etc.
  */
 export default function calculate(number, buttonType) {
+  // if buttonType is 0,1,2,3,4,5,6,7,8, or 9 button
   if (isNumber(buttonType)) {
+    // Done inserting a number
+    // if number is a operation like +,-,÷ or x 
     if (number.operation) {
+      // if inserting a number again then
       if (number.next) {
         return {
           next: number.next + buttonType
         };
-      } else {
-        return {
-          next: buttonType
-        };
       }
-    } else if (number.next) {
-      const next = number.next === "0" ? buttonType : number.next + buttonType;
+      // otherwise, then nothing happened except to click other buttons which is not a number
       return {
-        next, total: null
-      };
-    } else {
-      return {
-        next: buttonType, total: null
+        next: buttonType
       };
     }
-  } else if (buttonType === "AC") {
+    // if number is added again like 4 inserted to 5 resulted to 54
+    if (number.next) {
+      // make sure to add button type for period
+      return {
+          next: number.next + buttonType
+      };
+    }
+    // if none of numbers (operations or numbers) then 
+    // click other buttons which is not a number 
+    return {
+      next: buttonType, total: null
+    };
+  }
+  // if buttonType is AC
+  if (buttonType === "AC") {
     return {
       total: null, next: null, operation: null
     };
-  } else if (buttonType === "+/-") {
+  }
+  // if buttonType is +/-
+  if (buttonType === "+/-") {
+    // if inserting a number
     if (number.next) {
       return {
         next: (-1 * parseFloat(number.next)).toString()
       };
-    } else if (number.total) {
-      return {
-        total: (-1 * parseFloat(number.total)).toString()
-      };
-    } else {
-      return {};
     }
-  } else if (buttonType === "%") {
-    if (number.operation && number.next) {
-      const result = operate(number.total, number.next, number.operation);
-      return {
-        total: Big(result).div(100).toString(),
-        next: null,
-        operation: null,
-      };
-
-    } else if (number.next) {
+    // if once "=" is in the array
+    return {
+      total: (-1 * parseFloat(number.total)).toString()
+    };
+  }
+  // if buttonType is %
+  if (buttonType === "%") {
+    // if a number is available to insert in the array
+    if (number.next) {
       return {
         next: Big(number.next).div(100).toString()
       };
-    } else {
+    }
+    // if a number is not available to insert in the array
+    if (!number.next && !number.total) {
       return {};
     }
-  } else if (buttonType === ".") {
+    // if once "=" is in the array 
+    if (number.total)
+    return {
+      total: Big(number.total).div(100).toString()
+    };
+  }
+  // if buttonType is .
+  if (buttonType === ".") {
+    // if inserting a number to the array
     if (number.next) {
+      // if insert "." again then return none - "0.0.1" is invalid number
       if (number.next.includes(".")) {
         return {};
-      } else {
-        return {
-          next: number.next + "."
-        };
       }
-    } else {
+      // if inserting another number like 4 inserted to 5 resulted to 5.4 
       return {
-        next: "0."
+        next: number.next + "."
       };
     }
-  } else if (buttonType === "=") {
-    if (number.next && number.operation) {
+    // if inserting "." before a number
+    return {
+      next: "0."
+    };
+  }
+  // if buttonType is =
+  if (buttonType === "=") {
+    // the equation require number and operation to solve
+    if (number.operation) {
       return {
         total: operate(number.total, number.next, number.operation),
         next: null,
         operation: null
       };
-    } else {
-      return {};
     }
-  } else if (number.operation) {
+    // Otherwise, auto make a new equation (I am figuring out why it works)
+  }
+  // if number is a operation like +,-,÷ or x
+  if (number.operation) {
     return {
       total: operate(number.total, number.next, number.operation),
       next: null,
       operation: buttonType
     };
-  } else if (!number.next) {
-    return {
-      operation: buttonType
-    };
-  } else {
+  }
+  // if number is a number added to the array
+  if (number.next) {
     return {
       total: number.next, next: null, operation: buttonType
     };
-  }
+  } 
+  // if fail to click any buttons or numbers or operations, then click one of any operation
+  // 
+  // example:
+  // first value must be 0
+  // 0 + # = #
+  // 0 - # = -#
+  // 0 ÷ 0 = ERROR
+  // 0 ÷ # = 0
+  // 0 x # = 0
+  return {
+    operation: buttonType
+  };
 }
